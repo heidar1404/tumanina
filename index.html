@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="theme-color" content="#0f6b5c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>شمارنده ذکر</title>
+<style>
+:root{--bg:#eef3f1;--surface:#fff;--ink:#12302b;--muted:#5d7873;--line:#cfdcd8;--accent:#0f6b5c;--accent-ink:#fff;--ring:#d9e6e2;--brass:#b8862b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0e1f1c;--surface:#16302b;--ink:#e6f1ee;--muted:#93b0aa;--line:#2a4a44;--accent:#3fb59f;--accent-ink:#06211c;--ring:#244640;--brass:#e0b04f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1f1c;--surface:#16302b;--ink:#e6f1ee;--muted:#93b0aa;--line:#2a4a44;--accent:#3fb59f;--accent-ink:#06211c;--ring:#244640;--brass:#e0b04f;color-scheme:dark}
+:root[data-c="blue"]{--accent:#3b7fc4;--accent-ink:#fff;--ring:color-mix(in srgb,#3b7fc4 25%,var(--bg))}
+:root[data-c="purple"]{--accent:#8b5cc7;--accent-ink:#fff;--ring:color-mix(in srgb,#8b5cc7 25%,var(--bg))}
+:root[data-c="brown"]{--accent:#a9703a;--accent-ink:#fff;--ring:color-mix(in srgb,#a9703a 25%,var(--bg))}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:"Vazirmatn",Tahoma,"Segoe UI",system-ui,sans-serif;display:flex;justify-content:center;overflow-x:hidden}
+main{width:100%;max-width:440px;padding:16px 18px 24px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:1.05rem;font-weight:600;margin:0;color:var(--muted)}
+.top{display:flex;flex-direction:column;align-items:stretch;gap:8px}
+.top .row{flex-wrap:nowrap;gap:8px}
+.top .btn{flex:1;padding:10px 6px;font-size:.9rem;white-space:nowrap}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:.9rem;padding:8px 14px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.label{font-size:.85rem;color:var(--muted);margin:0 0 6px}
+.zikr{font-size:1.25rem;line-height:1.6;font-weight:800;text-align:center;margin:4px 0 0;min-height:4rem}
+.mean{margin:0;text-align:center;color:var(--muted);font-size:.9rem;line-height:1.7;min-height:3rem}
+.stage{position:relative;width:min(60vw,230px);aspect-ratio:1;margin:0 auto}
+svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.track{fill:none;stroke:var(--ring);stroke-width:10}
+.bar{fill:none;stroke:var(--accent);stroke-width:10;stroke-linecap:round;stroke-dasharray:753.98;stroke-dashoffset:753.98;transition:stroke-dashoffset .18s ease}
+#tap{position:absolute;inset:16px;border-radius:50%;border:0;background:var(--surface);color:var(--ink);box-shadow:0 0 0 1px var(--line);font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+#tap:active{transform:scale(.97);background:var(--bg)}
+#count{font-size:3.4rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+#of{font-size:.95rem;color:var(--muted)}
+#big{position:absolute;inset:0;display:none;align-items:center;justify-content:center;font-size:3.2rem;font-weight:800}
+.one main{padding-bottom:calc(40vh + 24px)}
+.one #count,.one #of{display:none}
+.one #big{display:flex}
+.one #tap{position:fixed;inset:auto 0 0 0;height:38vh;border-radius:28px 28px 0 0;background:var(--accent);color:var(--accent-ink);box-shadow:none;padding-bottom:env(safe-area-inset-bottom,0px)}
+.one #tap:active{background:var(--accent);opacity:.85;transform:none}
+.one #tap::after{content:attr(data-hint);font-size:1.8rem;font-weight:800}
+.stats{display:flex;justify-content:space-around;text-align:center}
+.stats b{display:block;font-size:1.3rem}
+.stats span{font-size:.8rem;color:var(--muted)}
+.week,.set{border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:10px 12px}
+.bars{display:flex;gap:6px;align-items:flex-end;height:104px}
+.col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px;font-size:.75rem;color:var(--muted)}
+.col i{width:100%;max-width:26px;border-radius:6px 6px 2px 2px;background:var(--ring)}
+.col i.t{background:var(--accent)}
+.row{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;padding:10px 16px;border-radius:12px;cursor:pointer}
+.btn:focus-visible,.chip:focus-visible,input:focus-visible,#tap:focus-visible,summary:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+input[type=number],input[type=time]{font:inherit;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+input[type=number]{width:84px;text-align:center}
+textarea{width:100%;height:70px;font:12px monospace;direction:ltr;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:8px}
+summary{cursor:pointer;font-weight:600}
+.set .sec{margin-top:14px}
+.dots{display:flex;gap:12px}
+.dot{width:34px;height:34px;border-radius:50%;border:3px solid var(--surface);box-shadow:0 0 0 1px var(--line);cursor:pointer}
+.dot[aria-pressed="true"]{box-shadow:0 0 0 3px var(--ink)}
+#msg{min-height:1.4rem;text-align:center;color:var(--brass);font-weight:600;margin:0}
+#remb{display:none;align-items:center;justify-content:space-between;gap:8px;background:var(--accent);color:var(--accent-ink);padding:10px 14px;border-radius:12px}
+#remb button{background:none;border:0;color:inherit;font:inherit;font-size:1.3rem;cursor:pointer}
+#lock{position:fixed;inset:0;z-index:50;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;gap:20px;text-align:center}
+#lock .btn{padding:18px 26px;font-weight:600;touch-action:none;user-select:none;-webkit-user-select:none}
+.zr{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--line)}
+.zr:last-child{border:0}
+.lglist{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.lglist .chip{text-align:center;padding:10px}
+.pb{height:10px;background:var(--ring);border-radius:6px;overflow:hidden}
+.pb i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
+@media (prefers-reduced-motion: reduce){.bar,.pb i{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <div class="top"><h1 data-k="title"></h1><div class="row"><button class="btn" id="lg"></button><button class="btn" id="lk" data-k="lock"></button><button class="btn" id="theme"></button></div></div>
+  <div id="lgm" class="set" style="display:none"><div id="langs" class="lglist"></div></div>
+  <div id="remb" role="status"><span id="remt"></span><button id="remx" aria-label="x">×</button></div>
+  <div><p class="label" data-k="zikr"></p><div class="chips" id="zikrs"></div></div>
+  <div><p class="label" data-k="goal"></p><div class="chips" id="targets"></div></div>
+  <p class="zikr" id="zname"></p>
+  <p class="mean" id="zmean"></p>
+  <div class="stage">
+    <svg viewBox="0 0 260 260" aria-hidden="true"><circle class="track" cx="130" cy="130" r="120"/><circle class="bar" id="bar" cx="130" cy="130" r="120"/></svg>
+    <div id="big"></div>
+    <button id="tap"><span id="count">0</span><span id="of"></span></button>
+  </div>
+  <p id="msg" role="status" aria-live="polite"></p>
+  <div id="dgw" style="display:none"><p class="label"><span data-k="dgoal"></span>: <b id="dgt"></b></p><div class="pb"><i id="dgb"></i></div></div>
+  <div class="week"><p class="label"><span data-k="week"></span>: <b id="wsum"></b></p><div class="bars" id="bars"></div></div>
+  <div class="stats">
+    <div><b id="best">0</b><span data-k="best"></span></div>
+    <div><b id="streak">0</b><span data-k="streak"></span></div>
+  </div>
+  <div class="stats">
+    <div><b id="rounds">0</b><span data-k="rounds"></span></div>
+    <div><b id="total">0</b><span data-k="today"></span></div>
+  </div>
+  <div class="row">
+    <button class="btn" id="undo" data-k="undo"></button>
+    <button class="btn" id="reset"></button>
+    <button class="btn" id="one"></button>
+    <button class="btn" id="snd"></button>
+    <button class="btn" id="vib"></button>
+    <button class="btn" id="shr" data-k="share"></button>
+  </div>
+  <div class="week" id="zsw" style="display:none"><p class="label" data-k="zs"></p><div id="zsl"></div></div>
+  <details class="set">
+    <summary data-k="settings"></summary>
+    <div class="sec"><p class="label" data-k="dgoal"></p><input type="number" id="dgi" min="0" max="1000000" inputmode="numeric"></div>
+    <div class="sec"><p class="label" data-k="color"></p><div class="dots" id="dots"></div></div>
+    
+    <div class="sec"><p class="label" data-k="remind"></p>
+      <div class="row" style="justify-content:flex-start">
+        <button class="chip" id="remon"></button>
+        <label><span data-k="morning"></span> <input type="time" id="tm"></label>
+        <label><span data-k="night"></span> <input type="time" id="tn"></label>
+      </div>
+      <p class="label" style="margin-top:6px" data-k="remnote"></p>
+    </div>
+    <div class="sec"><p class="label" data-k="backup"></p>
+      <textarea id="bk" aria-label="backup"></textarea>
+      <div class="row" style="margin-top:8px"><button class="btn" id="cp" data-k="copy"></button><button class="btn" id="rs" data-k="restore"></button></div>
+      <p class="label" id="bm" style="margin-top:6px"></p>
+    </div>
+  </details>
+</main>
+<div id="lock"><p data-k="locked" style="font-size:1.3rem;font-weight:800;margin:0"></p><button class="btn" id="unl" data-k="unlock"></button></div>
+
+<script>
+(function(){
+var Z=["سبحان‌الله","الحمدلله","الله‌اکبر","لا إله إلا الله","استغفرالله","صلوات","لا إله إلا الله وحده لا شریک له، له الملک وله الحمد","سبحان‌الله وبحمده","لا حول ولا قوة إلا بالله","حسبنا الله ونعم الوکیل","اللهم صل علی محمد وآل محمد",""];
+var MEAN={
+fa:['خدا از هر نقصی پاک است','ستایش مخصوص خداست','خدا بزرگ‌تر از هر وصفی است','جز خدا معبودی نیست','از خدا آمرزش می‌خواهم','درود بر محمد و خاندان محمد','معبودی جز خدای یگانه و بی‌شریک نیست؛ فرمانروایی و ستایش از آنِ اوست','خدا را از هر نقصی پاک می‌دانم و او را می‌ستایم','هیچ نیرو و توانی جز به خدا نیست','خدا ما را بس است و نیکو پشتیبانی است','خدایا بر محمد و خاندان محمد درود فرست',''],
+en:['Glory be to God','Praise be to God','God is greater','There is no god but God','I seek God’s forgiveness','Blessings upon Muhammad and his family','There is no god but the One God, with no partner; His is the dominion and the praise','Glory and praise be to God','There is no power or strength except through God','God is enough for us, and He is the best protector','O God, send blessings upon Muhammad and his family',''],
+ar:[],
+tr:['Allah her eksiklikten uzaktır','Hamd Allah’a mahsustur','Allah her şeyden daha büyüktür','Allah’tan başka ilah yoktur','Allah’tan bağışlanma dilerim','Muhammed’e ve ailesine salat olsun','Tek olan Allah’tan başka ilah yoktur, ortağı yoktur; mülk de hamd de O’nundur','Allah’ı eksikliklerden tenzih eder, O’na hamd ederim','Güç ve kuvvet ancak Allah’tandır','Allah bize yeter, ne güzel vekildir','Allah’ım, Muhammed’e ve ailesine salat eyle',''],
+id:['Mahasuci Allah','Segala puji bagi Allah','Allah Mahabesar','Tiada tuhan selain Allah','Aku memohon ampun kepada Allah','Selawat atas Muhammad dan keluarganya','Tiada tuhan selain Allah Yang Maha Esa, tiada sekutu bagi-Nya; milik-Nya kerajaan dan segala puji','Mahasuci Allah dan dengan memuji-Nya','Tiada daya dan kekuatan kecuali dengan pertolongan Allah','Cukuplah Allah bagi kami, Dialah sebaik-baik pelindung','Ya Allah, limpahkan selawat atas Muhammad dan keluarganya',''],
+fr:['Gloire à Dieu','Louange à Dieu','Dieu est plus grand','Il n’y a de dieu que Dieu','Je demande pardon à Dieu','Prière sur Muhammad et sa famille','Il n’y a de dieu que Dieu, l’Unique, sans associé ; à Lui la royauté et la louange','Gloire et louange à Dieu','Il n’y a de force ni de puissance qu’en Dieu','Dieu nous suffit, quel excellent protecteur','Ô Dieu, prie sur Muhammad et sa famille',''],
+ur:['اللہ ہر عیب سے پاک ہے','تمام تعریفیں اللہ کے لیے ہیں','اللہ سب سے بڑا ہے','اللہ کے سوا کوئی معبود نہیں','میں اللہ سے بخشش مانگتا ہوں','محمد اور ان کی آل پر درود','اللہ کے سوا کوئی معبود نہیں، وہ اکیلا ہے، اس کا کوئی شریک نہیں؛ بادشاہی اور تعریف اسی کی ہے','اللہ پاک ہے اور اسی کی تعریف ہے','نہ کوئی طاقت ہے نہ قوت، مگر اللہ کی مدد سے','اللہ ہمیں کافی ہے اور وہ بہترین کارساز ہے','اے اللہ، محمد اور آل محمد پر درود بھیج',''],
+ru:['Свят Аллах','Хвала Аллаху','Аллах превыше всего','Нет божества, кроме Аллаха','Прошу прощения у Аллаха','Благословение Мухаммаду и его семье','Нет божества, кроме единого Аллаха, нет у Него сотоварища; Ему принадлежат власть и хвала','Слава Аллаху и хвала Ему','Нет мощи и силы, кроме как от Аллаха','Нам достаточно Аллаха, прекрасный Он Покровитель','О Аллах, благослови Мухаммада и его семью','']};
+var DIG={fa:"۰۱۲۳۴۵۶۷۸۹",ar:"٠١٢٣٤٥٦٧٨٩"};
+var WD={fa:['ی','د','س','چ','پ','ج','ش'],en:['S','M','T','W','T','F','S'],ar:['ح','ن','ث','ر','خ','ج','س']};
+var T={
+title:{fa:"شمارنده ذکر",en:"Dhikr Counter",ar:"عدّاد الأذكار"},
+dark:{fa:"حالت شب",en:"Dark",ar:"ليلي"},light:{fa:"حالت روز",en:"Light",ar:"نهاري"},
+lock:{fa:"قفل",en:"Lock",ar:"قفل"},zikr:{fa:"ذکر",en:"Dhikr",ar:"الذكر"},
+goal:{fa:"هدف هر دور",en:"Goal per round",ar:"هدف الجولة"},custom:{fa:"دلخواه",en:"Custom",ar:"مخصص"},
+of:{fa:"از",en:"of",ar:"من"},hint:{fa:"بزن",en:"Tap",ar:"اضغط"},
+done:{fa:"یک دور کامل شد",en:"Round complete",ar:"اكتملت جولة"},
+rounds:{fa:"دور کامل",en:"Rounds",ar:"جولات"},today:{fa:"مجموع امروز",en:"Today",ar:"اليوم"},
+best:{fa:"رکورد یک روز",en:"Best day",ar:"أفضل يوم"},streak:{fa:"روز پشت‌سرهم",en:"Day streak",ar:"أيام متتالية"},
+week:{fa:"هفت روز اخیر",en:"Last 7 days",ar:"آخر ٧ أيام"},
+undo:{fa:"یک تا کم کن",en:"Undo",ar:"تراجع"},reset:{fa:"شروع دوباره",en:"Reset",ar:"إعادة"},
+sure:{fa:"مطمئنی؟ دوباره بزن",en:"Sure? Tap again",ar:"تأكيد؟ اضغط مجددًا"},
+vib:{fa:"لرزش",en:"Vibration",ar:"اهتزاز"},snd:{fa:"صدا",en:"Sound",ar:"صوت"},one:{fa:"تک‌دست",en:"One-hand",ar:"يد واحدة"},
+on:{fa:"روشن",en:"On",ar:"مفعّل"},off:{fa:"خاموش",en:"Off",ar:"متوقف"},
+settings:{fa:"تنظیمات",en:"Settings",ar:"الإعدادات"},color:{fa:"رنگ",en:"Color",ar:"اللون"},lang:{fa:"زبان",en:"Language",ar:"اللغة"},
+remind:{fa:"یادآور",en:"Reminders",ar:"التذكير"},morning:{fa:"صبح",en:"Morning",ar:"الصباح"},night:{fa:"شب",en:"Night",ar:"المساء"},
+remnote:{fa:"یادآور فقط وقتی صفحه باز است کار می‌کند",en:"Works only while the page is open",ar:"يعمل فقط والصفحة مفتوحة"},
+rm:{fa:"وقت ذکر صبح است",en:"Time for morning dhikr",ar:"وقت أذكار الصباح"},
+rn:{fa:"وقت ذکر شب است",en:"Time for evening dhikr",ar:"وقت أذكار المساء"},
+backup:{fa:"پشتیبان‌گیری",en:"Backup",ar:"نسخة احتياطية"},copy:{fa:"کپی پشتیبان",en:"Copy backup",ar:"نسخ"},
+restore:{fa:"بازیابی (متن بالا)",en:"Restore (text above)",ar:"استعادة (النص أعلاه)"},
+copied:{fa:"کپی شد",en:"Copied",ar:"تم النسخ"},restored:{fa:"بازیابی شد",en:"Restored",ar:"تمت الاستعادة"},
+bad:{fa:"متن پشتیبان درست نیست",en:"Invalid backup text",ar:"نص غير صالح"},
+locked:{fa:"قفل است",en:"Locked",ar:"مقفل"},unlock:{fa:"برای باز کردن ۲ ثانیه نگه دار",en:"Hold 2 seconds to unlock",ar:"اضغط مطولًا ثانيتين للفتح"}
+};
+var L={
+tr:{title:"Zikir Sayacı",dark:"Gece",light:"Gündüz",lock:"Kilit",zikr:"Zikir",goal:"Tur hedefi",custom:"Özel",of:"/",hint:"Dokun",done:"Tur tamamlandı",rounds:"Tur",today:"Bugün",best:"En iyi gün",streak:"Gün serisi",week:"Son 7 gün",undo:"Geri al",reset:"Sıfırla",sure:"Emin misin? Tekrar dokun",vib:"Titreşim",snd:"Ses",one:"Tek el",on:"Açık",off:"Kapalı",settings:"Ayarlar",color:"Renk",lang:"Dil",remind:"Hatırlatıcı",morning:"Sabah",night:"Akşam",remnote:"Yalnızca sayfa açıkken çalışır",rm:"Sabah zikri zamanı",rn:"Akşam zikri zamanı",backup:"Yedekleme",copy:"Yedeği kopyala",restore:"Geri yükle (yukarıdaki metin)",copied:"Kopyalandı",restored:"Geri yüklendi",bad:"Geçersiz yedek metni",locked:"Kilitli",unlock:"Açmak için 2 sn basılı tut"},
+id:{title:"Penghitung Zikir",dark:"Gelap",light:"Terang",lock:"Kunci",zikr:"Zikir",goal:"Target per putaran",custom:"Kustom",of:"dari",hint:"Ketuk",done:"Satu putaran selesai",rounds:"Putaran",today:"Hari ini",best:"Hari terbaik",streak:"Hari beruntun",week:"7 hari terakhir",undo:"Batalkan",reset:"Atur ulang",sure:"Yakin? Ketuk lagi",vib:"Getar",snd:"Suara",one:"Satu tangan",on:"Aktif",off:"Mati",settings:"Pengaturan",color:"Warna",lang:"Bahasa",remind:"Pengingat",morning:"Pagi",night:"Malam",remnote:"Hanya berfungsi saat halaman terbuka",rm:"Waktunya zikir pagi",rn:"Waktunya zikir petang",backup:"Cadangan",copy:"Salin cadangan",restore:"Pulihkan (teks di atas)",copied:"Disalin",restored:"Dipulihkan",bad:"Teks cadangan tidak valid",locked:"Terkunci",unlock:"Tahan 2 detik untuk membuka"},
+fr:{title:"Compteur de dhikr",dark:"Sombre",light:"Clair",lock:"Verrou",zikr:"Dhikr",goal:"Objectif par tour",custom:"Perso",of:"sur",hint:"Touchez",done:"Tour terminé",rounds:"Tours",today:"Aujourd’hui",best:"Meilleur jour",streak:"Jours d’affilée",week:"7 derniers jours",undo:"Annuler",reset:"Réinitialiser",sure:"Sûr ? Touchez encore",vib:"Vibration",snd:"Son",one:"Une main",on:"Activé",off:"Désactivé",settings:"Réglages",color:"Couleur",lang:"Langue",remind:"Rappels",morning:"Matin",night:"Soir",remnote:"Fonctionne seulement si la page est ouverte",rm:"C’est l’heure du dhikr du matin",rn:"C’est l’heure du dhikr du soir",backup:"Sauvegarde",copy:"Copier la sauvegarde",restore:"Restaurer (texte ci-dessus)",copied:"Copié",restored:"Restauré",bad:"Texte de sauvegarde invalide",locked:"Verrouillé",unlock:"Maintenez 2 s pour déverrouiller"},
+ur:{title:"ذکر شمار",dark:"رات",light:"دن",lock:"لاک",zikr:"ذکر",goal:"ہر دور کا ہدف",custom:"اپنی مرضی",of:"از",hint:"دبائیں",done:"ایک دور مکمل ہوا",rounds:"مکمل دور",today:"آج کا مجموعہ",best:"بہترین دن",streak:"مسلسل دن",week:"پچھلے 7 دن",undo:"ایک کم کریں",reset:"دوبارہ شروع",sure:"یقین ہے؟ دوبارہ دبائیں",vib:"وائبریشن",snd:"آواز",one:"ایک ہاتھ",on:"آن",off:"آف",settings:"ترتیبات",color:"رنگ",lang:"زبان",remind:"یاد دہانی",morning:"صبح",night:"شام",remnote:"صرف صفحہ کھلا ہونے پر کام کرتی ہے",rm:"صبح کے ذکر کا وقت ہے",rn:"شام کے ذکر کا وقت ہے",backup:"بیک اپ",copy:"بیک اپ کاپی کریں",restore:"بحال کریں (اوپر کا متن)",copied:"کاپی ہو گیا",restored:"بحال ہو گیا",bad:"بیک اپ متن درست نہیں",locked:"لاک ہے",unlock:"کھولنے کے لیے 2 سیکنڈ دبائے رکھیں"},
+ru:{title:"Счётчик зикра",dark:"Тёмная",light:"Светлая",lock:"Блок",zikr:"Зикр",goal:"Цель на круг",custom:"Своя",of:"из",hint:"Нажми",done:"Круг завершён",rounds:"Круги",today:"Сегодня",best:"Лучший день",streak:"Дней подряд",week:"Последние 7 дней",undo:"Отменить",reset:"Сбросить",sure:"Уверены? Нажмите ещё раз",vib:"Вибрация",snd:"Звук",one:"Одной рукой",on:"Вкл",off:"Выкл",settings:"Настройки",color:"Цвет",lang:"Язык",remind:"Напоминания",morning:"Утро",night:"Вечер",remnote:"Работает, только пока страница открыта",rm:"Время утреннего зикра",rn:"Время вечернего зикра",backup:"Резервная копия",copy:"Копировать копию",restore:"Восстановить (текст выше)",copied:"Скопировано",restored:"Восстановлено",bad:"Неверный текст копии",locked:"Заблокировано",unlock:"Удерживайте 2 с для разблокировки"}};
+for(var lg in L){for(var kk in L[lg]){if(T[kk])T[kk][lg]=L[lg][kk];}}
+DIG.ur=DIG.fa;
+WD.tr=['P','P','S','Ç','P','C','C'];WD.id=['M','S','S','R','K','J','S'];WD.fr=['D','L','M','M','J',
