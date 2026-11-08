@@ -15,7 +15,8 @@ document.body.appendChild(fso);
 var row=$("undo").parentNode,fm=document.createElement("button"),hw=document.createElement("button");
 fm.className="btn";fm.id="fm";hw.className="btn";hw.id="hw";row.appendChild(fm);row.appendChild(hw);
 var fsOn=false,hwOn=false,ms=false,au=null,wl=null,ht=null;
-function syn(){$("fsn").textContent=$("zname").textContent;$("fsc").textContent=$("count").textContent;$("fsg").textContent=$("of").textContent;}
+function meta(){if(!ms||!navigator.mediaSession)return;try{navigator.mediaSession.metadata=new MediaMetadata({title:$("count").textContent+" "+$("of").textContent,artist:$("zname").textContent||"طُمأنينة الذِّكر",album:"طُمأنينة الذِّكر"});}catch(e){}}
+function syn(){$("fsn").textContent=$("zname").textContent;$("fsc").textContent=$("count").textContent;$("fsg").textContent=$("of").textContent;meta();}
 function labels(){var l=L();fm.textContent=l.fm;fm.setAttribute("aria-pressed",fsOn);hw.textContent=hwOn?l.hwOn:l.hwOff;hw.setAttribute("aria-pressed",hwOn);$("fsh").textContent=l.ex;}
 new MutationObserver(labels).observe(document.documentElement,{attributes:true,attributeFilter:["lang"]});
 var mo=new MutationObserver(syn),oo={childList:true,characterData:true,subtree:true};
@@ -23,9 +24,9 @@ mo.observe($("count"),oo);mo.observe($("of"),oo);mo.observe($("zname"),oo);
 function tap(){$("tap").click();}
 function wav(){var n=64000,b=new ArrayBuffer(44+n),v=new DataView(b);function w(o,s){for(var i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i));}
 w(0,"RIFF");v.setUint32(4,36+n,true);w(8,"WAVE");w(12,"fmt ");v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,8000,true);v.setUint32(28,8000,true);v.setUint16(32,1,true);v.setUint16(34,8,true);w(36,"data");v.setUint32(40,n,true);
-for(var i=0;i<n;i++)v.setUint8(44+i,128);return URL.createObjectURL(new Blob([b],{type:"audio/wav"}));}
-function startMS(){ms=true;try{au=au||new Audio();au.src=wav();au.loop=true;au.play().catch(function(){});
- if(navigator.mediaSession){navigator.mediaSession.metadata=new MediaMetadata({title:"طُمأنينة الذِّكر"});
+for(var i=0;i<n;i++)v.setUint8(44+i,128+((i%40)<20?3:-3));return URL.createObjectURL(new Blob([b],{type:"audio/wav"}));}
+function startMS(){ms=true;try{au=au||new Audio();au.src=wav();au.loop=true;au.volume=1;au.play().catch(function(){});
+ if(navigator.mediaSession){meta();navigator.mediaSession.playbackState="playing";
   ["play","pause","nexttrack","previoustrack"].forEach(function(a){try{navigator.mediaSession.setActionHandler(a,function(){tap();if(a==="play"||a==="pause"){setTimeout(function(){au.play().catch(function(){});},60);}});}catch(e){}});}}catch(e){}}
 function stopMS(){ms=false;try{au&&au.pause();}catch(e){}try{["play","pause","nexttrack","previoustrack"].forEach(function(a){navigator.mediaSession.setActionHandler(a,null);});}catch(e){}}
 function sync(){var need=hwOn||fsOn;if(need&&!ms)startMS();if(!need&&ms)stopMS();}
