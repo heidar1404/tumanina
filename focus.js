@@ -15,7 +15,13 @@ document.body.appendChild(fso);
 var row=$("undo").parentNode,fm=document.createElement("button"),hw=document.createElement("button");
 fm.className="btn";fm.id="fm";hw.className="btn";hw.id="hw";row.appendChild(fm);row.appendChild(hw);
 var fsOn=false,hwOn=false,ms=false,au=null,wl=null,ht=null;
-function meta(){if(!ms||!navigator.mediaSession)return;try{navigator.mediaSession.metadata=new MediaMetadata({title:$("count").textContent+" "+$("of").textContent,artist:$("zname").textContent||"طُمأنينة الذِّكر",album:"طُمأنينة الذِّكر"});}catch(e){}}
+var artU=null;
+function art(){if(artU!==null)return artU;try{var c=document.createElement("canvas");c.width=c.height=256;var g=c.getContext("2d");g.fillStyle="#0f6b5c";g.fillRect(0,0,256,256);
+for(var i=0;i<19;i++){var a=Math.PI/2+2*Math.PI*(i+.5)/19;g.fillStyle="#f0ece0";g.beginPath();g.arc(128+80*Math.cos(a),104+80*Math.sin(a),14,0,7);g.fill();}
+g.fillStyle="#d6a848";g.beginPath();g.arc(128,104,32,0,7);g.fill();g.fillStyle="#0f6b5c";g.beginPath();g.arc(143,98,32,0,7);g.fill();
+g.fillStyle="#d6a848";g.fillRect(126,198,4,14);g.beginPath();g.arc(128,218,7,0,7);g.fill();g.fillRect(119,227,18,19);
+artU=c.toDataURL("image/png");}catch(e){artU="";}return artU;}
+function meta(){if(!ms||!navigator.mediaSession)return;try{var o={title:$("count").textContent+" "+$("of").textContent,artist:$("zname").textContent||"طُمأنينة الذِّكر",album:"طُمأنينة الذِّكر"},u=art();if(u)o.artwork=[{src:u,sizes:"256x256",type:"image/png"}];navigator.mediaSession.metadata=new MediaMetadata(o);}catch(e){}}
 function syn(){$("fsn").textContent=$("zname").textContent;$("fsc").textContent=$("count").textContent;$("fsg").textContent=$("of").textContent;meta();}
 function labels(){var l=L();fm.textContent=l.fm;fm.setAttribute("aria-pressed",fsOn);hw.textContent=hwOn?l.hwOn:l.hwOff;hw.setAttribute("aria-pressed",hwOn);$("fsh").textContent=l.ex;}
 new MutationObserver(labels).observe(document.documentElement,{attributes:true,attributeFilter:["lang"]});
