@@ -1,5 +1,5 @@
 (function(){
-var TARGETS=[33,99,100,0],KEY="zekr-counter-v1",CIRC=753.98;
+var TARGETS=[10,33,44,100,0],KEY="zekr-counter-v1",CIRC=753.98;
 function today(){var d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}
 var S={zikr:0,target:33,custom:50,count:0,rounds:0,total:0,day:today(),vib:true,snd:true,one:false,hist:{},theme:"",lang:"fa",color:"green",rem:{on:false,m:"05:00",n:"20:00"},rd:{},dg:0,zs:{}};
 try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);for(var k in o){if(k in S)S[k]=o[k];}}}catch(e){}
