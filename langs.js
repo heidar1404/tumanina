@@ -7,7 +7,7 @@ ps:{dark:"شپنی",light:"ورځنی",lock:"قفل",zikr:"ذکر",goal:"د دو
 for(var l in L2){for(var k in L2[l]){if(T[k])T[k][l]=L2[l][k];}if(T.title)T.title[l]=T.title.fa;}
 WD.uz=["Y","D","S","C","P","J","S"];WD.tk=["Ý","D","S","Ç","P","A","Ş"];WD.ps=WD.fa;DIG.ps=DIG.fa;
 
-var NM={uz:"Oʻzbekcha",tk:"Türkmençe",ps:"پښتو"};
+var NM={uz:"Oʻzbekcha",tk:"Türkmençe",ps:"پشتو"};
 var H=document.documentElement,lg=document.getElementById("lg"),lgs=document.getElementById("langs");
 function chips(){
   if(!lgs||lgs.querySelector("[data-nl]"))return;
@@ -20,4 +20,27 @@ function chips(){
 if(lgs)new MutationObserver(chips).observe(lgs,{childList:true});
 if(lg)new MutationObserver(function(){if(NM[H.lang]&&lg.textContent.indexOf("undefined")>-1)lg.textContent="🌐 "+NM[H.lang];}).observe(lg,{childList:true,characterData:true,subtree:true});
 new MutationObserver(function(){if(H.lang==="ps"&&H.dir!=="rtl")H.dir="rtl";}).observe(H,{attributes:true,attributeFilter:["lang","dir"]});
+
+/* translate the few English fallback texts of the other scripts */
+var EN={
+"⛶ Focus":{uz:"⛶ To‘liq ekran",tk:"⛶ Doly ekran",ps:"⛶ بشپړ سکرین"},
+"Hold ✕ to exit":{uz:"Chiqish uchun ✕ ni bosib turing",tk:"Çykmak üçin ✕ basyp duruň",ps:"د وتلو لپاره ✕ ونیسئ"},
+"← Back":{uz:"← Orqaga",tk:"← Yza",ps:"← شاته"},
+"Tasbih & sound":{uz:"Tasbeh va ovoz",tk:"Tesbih we ses",ps:"تسبیح او غږ"},
+"Tasbih skin":{uz:"Tasbeh ko‘rinishi",tk:"Tesbih görnüşi",ps:"د تسبیح بڼه"},
+"Bead sound":{uz:"Dona ovozi",tk:"Däne sesi",ps:"د دانې غږ"},
+"Default":{uz:"Standart",tk:"Adaty",ps:"تلواله"},
+"Wood":{uz:"Yog‘och",tk:"Agaç",ps:"لرګی"},
+"Shah Maqsud":{uz:"Shoh Maqsud",tk:"Şa Maksud",ps:"شاه مقصود"},
+"Amber":{uz:"Qahrabo",tk:"Kehribar",ps:"کهربا"},
+"Turquoise":{uz:"Feruza",tk:"Pyrozä",ps:"فیروزه"},
+"Minimal":{uz:"Minimal",tk:"Minimal",ps:"مینیمال"},
+"Off":{uz:"O‘chiq",tk:"Ýapyk",ps:"بند"}
+};
+function tr(){
+  var l=H.lang;if(!NM[l]||!document.body)return;
+  var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null),n;
+  while((n=w.nextNode())){var t=n.nodeValue.trim(),m=EN[t];if(m&&m[l])n.nodeValue=n.nodeValue.replace(t,m[l]);}
+}
+if(document.body)new MutationObserver(tr).observe(document.body,{childList:true,characterData:true,subtree:true});
 })();
