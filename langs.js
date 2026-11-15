@@ -40,7 +40,7 @@ var EN={
 function tr(){
   var l=H.lang;if(!NM[l]||!document.body)return;
   var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null),n;
-  while((n=w.nextNode())){var t=n.nodeValue.trim(),m=EN[t];if(m&&m[l])n.nodeValue=n.nodeValue.replace(t,m[l]);}
+  while((n=w.nextNode())){var t=n.nodeValue.trim(),m=EN[t];if(m&&m[l]&&m[l]!==t)n.nodeValue=n.nodeValue.replace(t,m[l]);}
 }
 if(document.body)new MutationObserver(tr).observe(document.body,{childList:true,characterData:true,subtree:true});
 })();
